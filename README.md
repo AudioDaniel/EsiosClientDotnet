@@ -122,3 +122,11 @@ Other top-level methods on `IEsiosClient`:
 - `GetAsync(string endpoint)`: A generic method to perform a GET request against any other ESIOS endpoint using API v1.
 - `CheckHealthAsync()`: Validates that the ESIOS API is reachable.
 - `VerifyTokenAsync()`: Validates that your configured `PersonalToken` is authorized.
+
+## Token Usage Guidelines (ESIOS API Terms)
+
+Please adhere to the following guidelines provided by REE regarding the use of your personal token:
+
+- **Personal Use**: This token is issued for the personal use of the applicant.
+- **Public Applications**: If you are going to provide public access to projects developed by you (applications, web pages, scripts...) that use data retrieved from the e·sios API, you must transfer the information returned by the API to a server you own, so that those applications, pages, or scripts access the data stored on your server and not REE's systems.
+- **Responsible Use**: Responsible use of the API: do not make massive, redundant, or unnecessary requests, such as for information already downloaded previously or information known not to have been modified, as well as requests for non-existent indicators.
