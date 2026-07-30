@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,13 +15,24 @@ internal class EsiosAuctionClient : EsiosClientBase, IEsiosAuctionClient
     {
     }
 
-    public async Task<string> GetAuctionsRawAsync(CancellationToken cancellationToken = default)
+    public async Task<string> GetAuctionsRawAsync(DateTime? year = null, CancellationToken cancellationToken = default)
     {
-        return await GetWithVersionAsync(AuctionsEndpoint, "v1", cancellationToken);
+        string endpoint = AuctionsEndpoint;
+        if (year.HasValue)
+        {
+            // The ESIOS API often fails to parse full datetime strings and expects either 'date=yyyy-MM-dd' or 'year=yyyy'
+            endpoint += $"?date={year.Value:yyyy-MM-dd}&year={year.Value.Year}";
+        }
+        return await GetWithVersionAsync(endpoint, "v1", cancellationToken);
     }
 
-    public async Task<EsiosAuctionResponse?> GetAuctionsAsync(CancellationToken cancellationToken = default)
+    public async Task<EsiosAuctionResponse?> GetAuctionsAsync(DateTime? year = null, CancellationToken cancellationToken = default)
     {
-        return await GetFromJsonAsync<EsiosAuctionResponse>(AuctionsEndpoint, "v1", cancellationToken);
+        string endpoint = AuctionsEndpoint;
+        if (year.HasValue)
+        {
+            endpoint += $"?date={year.Value:yyyy-MM-dd}&year={year.Value.Year}";
+        }
+        return await GetFromJsonAsync<EsiosAuctionResponse>(endpoint, "v1", cancellationToken);
     }
 }
