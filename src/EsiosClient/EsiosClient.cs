@@ -1,3 +1,4 @@
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,9 +32,9 @@ public class EsiosClient : EsiosClientBase, IEsiosClient
         return await GetWithVersionAsync(endpoint, "v1", cancellationToken);
     }
 
-    public async Task<bool> CheckHealthAsync(CancellationToken cancellationToken = default)
+    public Task<bool> CheckHealthAsync(CancellationToken cancellationToken = default)
     {
-        try
+        return TryHandleHttpRequestException(async () =>
         {
             using var request = new HttpRequestMessage(HttpMethod.Head, "/indicators");
             request.Headers.TryAddWithoutValidation("Accept", "application/json; application/vnd.esios-api-v1+json");
@@ -48,16 +49,12 @@ public class EsiosClient : EsiosClientBase, IEsiosClient
             }
 
             return (int)response.StatusCode >= 200 && (int)response.StatusCode < 500;
-        }
-        catch (HttpRequestException)
-        {
-            return false;
-        }
+        });
     }
 
-    public async Task<bool> VerifyTokenAsync(CancellationToken cancellationToken = default)
+    public Task<bool> VerifyTokenAsync(CancellationToken cancellationToken = default)
     {
-        try
+        return TryHandleHttpRequestException(async () =>
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, "/indicators");
             request.Headers.TryAddWithoutValidation("Accept", "application/json; application/vnd.esios-api-v1+json");
@@ -71,10 +68,18 @@ public class EsiosClient : EsiosClientBase, IEsiosClient
             }
 
             return response.IsSuccessStatusCode;
+        });
+    }
+
+    private async Task<bool> TryHandleHttpRequestException(Func<Task<bool>> action)
+    {
+        try
+        {
+            return await action();
         }
         catch (HttpRequestException)
         {
-            return false;
+            return false;       
         }
     }
 }
