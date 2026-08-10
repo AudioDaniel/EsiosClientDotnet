@@ -1,6 +1,6 @@
 # EsiosClient
 
-A reusable .NET client library for consuming the [ESIOS API](https://www.esios.ree.es/).
+A reusable .NET client library for consuming the [ESIOS API](https://www.esios.ree.es/) (Red Eléctrica de España) .
 
 ## Overview
 
